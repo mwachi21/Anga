@@ -25,9 +25,13 @@
         <div class="section">
             <h2>Weather</h2>
             <div class="weather-hero">
-                <div class="weather-icon" style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">
-                    <img src="{{ info.icon_url }}" alt="icon" style="width:100%;height:100%;object-fit:contain">
-                </div>
+                                <div class="weather-icon" style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">
+                                        {% if info.mdi_icon %}
+                                            <i class="mdi {{ info.mdi_icon }}" style="font-size:84px;color:var(--accent)"></i>
+                                        {% else %}
+                                            <img src="{{ info.icon_url }}" alt="icon" style="width:100%;height:100%;object-fit:contain">
+                                        {% endif %}
+                                </div>
                 <div class="liquid-panel">
                     <div style="display:flex;justify-content:space-between;align-items:center">
                         <div>

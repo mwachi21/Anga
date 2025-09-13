@@ -6,6 +6,25 @@ app = Flask(__name__)
 key = 'e33384b4c1fd428aa30162046251309'
 weather_base_url = 'http://api.weatherapi.com/v1'
 
+# simple mapping from condition keywords to Material Design Icon names
+MDI_MAP = {
+    'clear': 'mdi-weather-sunny',
+    'sun': 'mdi-weather-sunny',
+    'partly': 'mdi-weather-partly-cloudy',
+    'cloud': 'mdi-weather-cloudy',
+    'overcast': 'mdi-weather-cloudy',
+    'rain': 'mdi-weather-pouring',
+    'drizzle': 'mdi-weather-rainy',
+    'shower': 'mdi-weather-rainy',
+    'snow': 'mdi-snowflake',
+    'sleet': 'mdi-snowflake',
+    'thunder': 'mdi-weather-lightning',
+    'storm': 'mdi-weather-lightning',
+    'fog': 'mdi-weather-fog',
+    'mist': 'mdi-weather-fog',
+    'haze': 'mdi-weather-hazy'
+}
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     info = None
@@ -47,11 +66,18 @@ def home():
                         return 'icons/partly-cloudy.svg'
 
                     icon_path = choose_icon(condition_text, is_day)
+                    # pick an mdi icon class if possible
+                    mdi_icon = None
+                    for k,v in MDI_MAP.items():
+                        if k in condition_text:
+                            mdi_icon = v
+                            break
                     info = {
                         'location': weather.get('location', {}),
                         'weather': current,
                         'air_quality': airquality,
-                        'icon_url': f"/static/{icon_path}"
+                        'icon_url': f"/static/{icon_path}",
+                        'mdi_icon': mdi_icon
                     }
             except Exception:
                 error = "Error fetching data."
@@ -70,6 +96,17 @@ def forecast_page():
             resp = requests.get(url)
             if resp.ok:
                 forecast_info = resp.json()
+                # attach mdi icon names to each day when possible
+                try:
+                    for fd in forecast_info.get('forecast', {}).get('forecastday', []):
+                        text = (fd.get('day', {}).get('condition', {}).get('text') or '').lower()
+                        fd['mdi_icon'] = None
+                        for k,v in MDI_MAP.items():
+                            if k in text:
+                                fd['mdi_icon'] = v
+                                break
+                except Exception:
+                    pass
             else:
                 error = 'Error fetching forecast data.'
         except Exception:

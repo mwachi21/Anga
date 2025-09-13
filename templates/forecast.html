@@ -26,7 +26,13 @@
             <article class="forecast-card">
               <header>
                 <h3>{{ day.date }}</h3>
-                <img src="/static/icons/{{ day.day.condition.text | lower | replace(' ', '-') }}.svg" alt="{{ day.day.condition.text }}" onerror="this.style.display='none'" />
+                  {% if day.mdi_icon %}
+                    <i class="mdi {{ day.mdi_icon }}" style="font-size:32px;color:var(--accent)"></i>
+                  {% elif day.day.condition.icon %}
+                    <img src="{{ day.day.condition.icon }}" alt="{{ day.day.condition.text }}" />
+                  {% else %}
+                    <img src="/static/icons/{{ day.day.condition.text | lower | replace(' ', '-') }}.svg" alt="{{ day.day.condition.text }}" onerror="this.style.display='none'" />
+                  {% endif %}
               </header>
               <div class="forecast-body">
                 <p class="temp">High: {{ day.day.maxtemp_c }}°C / Low: {{ day.day.mintemp_c }}°C</p>
