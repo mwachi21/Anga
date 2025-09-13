@@ -1,0 +1,43 @@
+{% extends "_layouts/default.html" %}
+
+{% block content %}
+<main class="container">
+  <section class="hero">
+    <div class="liquid-panel">
+      <h1>Forecast</h1>
+      <form method="get" action="/forecast" class="form-row">
+        <input class="search-input" name="city" placeholder="City or ZIP" value="{{ request.values.get('city','') }}" />
+        <select name="days">
+          <option value="1" {% if request.values.get('days')=='1' %}selected{% endif %}>1</option>
+          <option value="3" {% if request.values.get('days','3')=='3' %}selected{% endif %}>3</option>
+          <option value="5" {% if request.values.get('days')=='5' %}selected{% endif %}>5</option>
+          <option value="7" {% if request.values.get('days')=='7' %}selected{% endif %}>7</option>
+        </select>
+        <button class="btn-primary" type="submit">Get Forecast</button>
+      </form>
+
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+
+      {% if forecast %}
+        <div class="forecast-grid">
+          {% for day in forecast.forecast.forecastday %}
+            <article class="forecast-card">
+              <header>
+                <h3>{{ day.date }}</h3>
+                <img src="/static/icons/{{ day.day.condition.text | lower | replace(' ', '-') }}.svg" alt="{{ day.day.condition.text }}" onerror="this.style.display='none'" />
+              </header>
+              <div class="forecast-body">
+                <p class="temp">High: {{ day.day.maxtemp_c }}°C / Low: {{ day.day.mintemp_c }}°C</p>
+                <p>{{ day.day.condition.text }}</p>
+                <p>Precip: {{ day.day.daily_chance_of_rain }}% • Wind: {{ day.day.maxwind_kph }} kph</p>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

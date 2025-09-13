@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Weather & Air Quality{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar">
+      <div class="nav-left">
+        <div class="logo">W</div>
+        <div class="brand-text">
+          <div class="title">Weather</div>
+          <div class="subtitle">Air & current conditions</div>
+        </div>
+      </div>
+
+      <div class="nav-center" id="nav-center">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/forecast">Forecast</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-right">
+        <button id="nav-hamburger" aria-label="Open menu" title="Menu">☰</button>
+        <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+      </div>
+    </nav>
+
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">Powered by <a href="https://www.weatherapi.com/">WeatherAPI.com</a></footer>
+</div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+</body>
+</html>

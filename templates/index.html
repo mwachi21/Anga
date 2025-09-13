@@ -1,0 +1,80 @@
+{%- extends "_layouts/default.html" -%}
+
+{%- block content -%}
+    <form method="POST" class="form-row">
+        <input class="search-input" type="text" name="city" placeholder="City name" value="{{ request.form.city or '' }}">
+        <button class="btn-primary" type="submit">Fetch Info</button>
+    </form>
+
+    {%- if error -%}
+        <div class="section card" style="border-left:4px solid #f87171;color:#b91c1c">{{ error }}</div>
+    {%- endif -%}
+
+    {%- if info -%}
+        <div class="section">
+            <h2>Location</h2>
+            <div class="info-grid">
+                <div class="card"><div class="muted">Name</div><div>{{ info.location.name }}</div></div>
+                <div class="card"><div class="muted">Region</div><div>{{ info.location.region }}</div></div>
+                <div class="card"><div class="muted">Country</div><div>{{ info.location.country }}</div></div>
+                <div class="card"><div class="muted">Lat / Lon</div><div>{{ info.location.lat }}, {{ info.location.lon }}</div></div>
+                <div class="card"><div class="muted">Local Time</div><div>{{ info.location.localtime }}</div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Weather</h2>
+            <div class="weather-hero">
+                <div class="weather-icon" style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">
+                    <img src="{{ info.icon_url }}" alt="icon" style="width:100%;height:100%;object-fit:contain">
+                </div>
+                <div class="liquid-panel">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <div class="big-temp">{{ info.weather.temp_c }}°C</div>
+                            <div class="muted">{{ info.weather.condition.text if info.weather.condition }}</div>
+                        </div>
+                        <div class="muted" style="text-align:right">Local: {{ info.location.localtime }}</div>
+                    </div>
+
+                    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                        <div style="min-width:110px">
+                            <div class="muted">Feels like</div>
+                            <div>{{ info.weather.feelslike_c }}°C</div>
+                        </div>
+                        <div style="min-width:110px">
+                            <div class="muted">Wind</div>
+                            <div>{{ info.weather.wind_kph }} kph</div>
+                        </div>
+                        <div style="min-width:110px">
+                            <div class="muted">Humidity</div>
+                            <div>{{ info.weather.humidity }} %</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                        <div class="muted" style="width:100%">Air quality summary</div>
+                        <div class="card"><div class="muted">PM2.5</div><div>{{ info.air_quality.pm2_5|round(2) if info.air_quality.pm2_5 is defined else 'N/A' }}</div></div>
+                        <div class="card"><div class="muted">PM10</div><div>{{ info.air_quality.pm10|round(2) if info.air_quality.pm10 is defined else 'N/A' }}</div></div>
+                        <div class="card"><div class="muted">EPA</div><div>{{ info.air_quality['us-epa-index'] if info.air_quality['us-epa-index'] is defined else 'N/A' }}</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Air Quality</h2>
+            <div class="info-grid">
+                <div class="card"><div class="muted">CO</div><div>{{ info.air_quality.co|round(2) if info.air_quality.co is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">NO₂</div><div>{{ info.air_quality.no2|round(2) if info.air_quality.no2 is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">O₃</div><div>{{ info.air_quality.o3|round(2) if info.air_quality.o3 is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">SO₂</div><div>{{ info.air_quality.so2|round(2) if info.air_quality.so2 is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">PM2.5</div><div>{{ info.air_quality.pm2_5|round(2) if info.air_quality.pm2_5 is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">PM10</div><div>{{ info.air_quality.pm10|round(2) if info.air_quality.pm10 is defined else 'N/A' }} µg/m³</div></div>
+                <div class="card"><div class="muted">US EPA Index</div><div>{{ info.air_quality['us-epa-index'] if info.air_quality['us-epa-index'] is defined else 'N/A' }}</div></div>
+                <div class="card"><div class="muted">GB DEFRA Index</div><div>{{ info.air_quality['gb-defra-index'] if info.air_quality['gb-defra-index'] is defined else 'N/A' }}</div></div>
+            </div>
+        </div>
+    {%- endif -%}
+
+{%- endblock -%}
